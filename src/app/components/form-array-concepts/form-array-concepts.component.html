@@ -1,54 +1,66 @@
-<!-- <hello name="{{ name }}"></hello> -->
-<form [formGroup]="technologyForm" (ngSubmit)="submit()">
-  <div [formGroup]="technologyForm">
-    <label for=""> FirstName</label> <br>
-    <input type="text" formControlName="firstName">
-    <div *ngIf="submitted && f.firstName.errors">
-      <div *ngIf="f.firstName.errors.required">firstName is Required</div>
-    </div> <br>
-    <label for=""> LastName</label> <br>
-    <input type="text" formControlName="lastName">
+<div class="wholeForm">
+  <form [formGroup]="technologyForm" (ngSubmit)="submit()">
+    <div [formGroup]="technologyForm" >
+      <label> FirstName</label> <br>
+      <input type="text" formControlName="firstName" value="technologyForm.value.firstName">
+      <div *ngIf="submitted && f.firstName.errors">
+        <div *ngIf="f.firstName.errors.required">FirstName is Required</div>
+      </div> <br>
+      <label> LastName</label> <br>
+      <input type="text" formControlName="lastName">
+      <div>
+        <div class="color" formArrayName="technology" *ngFor="let technology of getControls(); let i = index;">
+          <div [formGroupName]="i">
+            
+            <h2>Technology</h2>
+            <label>Name</label> <br>
+            <input type="text" formControlName="name"> <br>
+            <label>Id</label> <br>
+            <input type="text" formControlName="id">
+            <div *ngIf="submitted && technologyForm?.controls?.technology?.controls[i]?.get('id')?.errors">
+              <div *ngIf="technologyForm?.controls?.technology?.controls[i]?.get('id')?.errors?.required">Id is Required
+              </div>
+            </div> <br>
 
-    <div formArrayName="technology" *ngFor="let technology of getControls(); let i = index;">
-      <div [formGroupName]="i">
-        <h2>Technology</h2>
-        <label for="">Name</label> <br>
-        <input type="text" formControlName="name"> <br>
-        <div *ngIf="submitted && technologyForm.controls.technology.controls[i].get('versions').errors">
-          <div *ngIf="technologyForm.controls.technology.controls[i].get('name').errors.required">id is Required</div>
-        </div> <br>
-        <label for="">id</label> <br>
-        <input type="number" formControlName="id">
-        <div *ngIf="submitted && technologyForm?.controls?.technology?.controls[i]?.get('id').errors">
-          <div *ngIf="technologyForm?.controls?.technology?.controls[i]?.get('id').errors.required">id is Required</div>
-        </div> <br>
-        <div formArrayName="versions" *ngFor="let version of technology['controls'].versions['controls']; let j=index;">
-          <div [formGroupName]="j">
-            <h3>Version</h3>
-            <ul>
-              <li>
-                <label for="">Name</label> <br>
-              </li>
-              <input type="text" formControlName="name"> <br>
-            </ul>
-            <div  *ngIf="submitted && technologyForm?.controls?.technology?.controls?.versions?.controls[j]?.get('name').errors">
-              <div *ngIf="technologyForm?.controls?.technology?.controls?.versions.controls[j]?.get('name')?.errors.required">
-                version Name is
-                Required
+            <div formArrayName="versions"
+              *ngFor="let version of technology['controls']?.versions['controls']; let j=index;">
+              <div [formGroupName]="j">
+                <div class="version">
+                  <h3>Version</h3>
+                  <ul>
+                    <li>
+                      <label>Name</label> <br>
+                    </li>
+                    <input type="text" formControlName="name"> <br>
+                    <div *ngIf="submitted && version?.get('name')?.errors">
+                      <div *ngIf="version?.get('name')?.errors?.required">
+                        Version Name is Required
+                      </div>
+                    </div>
+                  </ul>
+
+                  <button type="button" (click)="addVersion(i)">Add Version</button>
+                  <button type="button" *ngIf="technology['controls']?.versions['controls']?.length>1"
+                    (click)="removeVersion(i,j)"> Delete Version</button>
+                </div>
+
               </div>
             </div>
-            <button (click)="addVersion(i)">Add Version</button>
-            <button (click)="removeVersion(j)"> Delete Version</button>
-
-
+      
           </div>
+
+          <button type="button" (click)="addNewTechnology()">Add</button>
+          <button type="button" *ngIf="this.technologyForm.controls.technology.value.length>1"
+            (click)="deleteTechnology(i)"> Delete Technology</button>
         </div>
 
       </div>
-    </div>
-  </div>
-  <button (click)="addNewTechnology()">Add</button> <br>
-  <button (click)="reset()">Reset</button>
-  <button type="submit">Submit</button>
-</form>
-<!-- <input formControlName="price" placeholder="Item price"> -->
+
+
+    </div><br>
+
+    <button type="button" (click)="reset()">Reset</button>
+    <button type="submit">Submit</button>
+    
+  </form>
+</div>
